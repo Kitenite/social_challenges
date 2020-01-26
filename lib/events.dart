@@ -219,6 +219,18 @@ class EventPageState extends State<EventPage> {
                 //Confirm attendance here
                 Firestore.instance.collection("users")
                   .document(widget.user.documentID).updateData({"upcoming": FieldValue.arrayUnion([event.documentID])});
+                Firestore.instance.collection("challenge")
+                  .document(event.documentID).updateData({
+                  "attending": FieldValue.increment(1), "score": FieldValue.increment(widget.user.score)
+                });
+                Firestore.instance.collection("challenge")
+                  .document(event.documentID).get().then((DocumentSnapshot ds) {
+                    if (ds["attending"] >= ds["max_attending"]) {
+                      Firestore.instance.collection("challenge")
+                        .document(event.documentID).updateData({"full": true});
+                    }
+                  });
+
               },
 
             ),

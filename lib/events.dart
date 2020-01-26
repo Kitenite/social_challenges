@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
-class EventsListState extends State<EventsList> {
+class EventsListPageState extends State<EventsListPage> {
   final fakeEvent = new Event("Event number 1");
   final fakeEvent2 = new Event("Event number 2");
   final fakeEvent3 = new Event("Event number 3");
 
   final List<Event> _events = <Event>[];
 
+  var built = false;
+
   @override
   Widget build(BuildContext context) {
-    _events.add(fakeEvent);
-    _events.add(fakeEvent2);
-    _events.add(fakeEvent3);
+    if (!built){
+      _events.add(fakeEvent);
+      _events.add(fakeEvent2);
+      _events.add(fakeEvent3);
+      built = true;
+    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -31,14 +37,10 @@ class EventsListState extends State<EventsList> {
         padding: const EdgeInsets.all(16.0),
         itemCount: _events.length,
         itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) {
-            return Divider();
-          }else{
-            if (_events.length <= 0) {
-              return Text("No Events");
-            }
-            return _buildRow(_events[i]);
+          if (_events.length <= 0) {
+            return Text("No Events");
           }
+          return _buildRow(_events[i]);
         });
   }
 
@@ -59,9 +61,11 @@ class EventsListState extends State<EventsList> {
   }
 }
 
-class EventsList extends StatefulWidget {
+class EventsListPage extends StatefulWidget {
+  EventsListPage();
+
   @override
-  EventsListState createState() => EventsListState();
+  EventsListPageState createState() => EventsListPageState();
 }
 
 class Event {
@@ -155,22 +159,28 @@ class EventPageState extends State<EventPage> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rewind and remember'),
+          title: Text('Attend this event?'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('You will never be satisfied.'),
-                Text('You\’re like me. I’m never satisfied.'),
+                Text('If confirm, the owner will be notified of your attendance. There will be a penalty to your reputation for flaking.'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Regret'),
+              child: Text('Attend'),
               onPressed: () {
                 Navigator.of(context).pop();
+                //Confirm attendance here
               },
+
             ),
+            FlatButton(
+            child: Text('Cancel'),
+            onPressed: () {
+            Navigator.of(context).pop();
+            })
           ],
         );
       },

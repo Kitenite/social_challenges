@@ -5,6 +5,9 @@ import 'create.dart';
 import 'login_page.dart';
 import 'profile.dart';
 import 'data.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+
 
 
 void main() => runApp(MainAppPage());
@@ -22,7 +25,6 @@ class MainAppPageState  extends State<MainAppPage> {
     if(!built){
       data.getUserInfo("perak005@umn.edu").listen((data) =>
           data.documents.forEach((doc) =>
-          //self = new User(doc["username"], doc["score"])
           setState(() {
             user = new User(doc["username"], doc["score"]);
             _widgetOptions = <Widget>[
@@ -38,6 +40,8 @@ class MainAppPageState  extends State<MainAppPage> {
     user = data.self;
     return MaterialApp(
       title: 'Social App',
+      theme: ThemeData(
+      textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)),
       home: Scaffold(
         body:Center(
           child: _widgetOptions.elementAt(_selectedIndex),

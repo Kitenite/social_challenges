@@ -7,8 +7,16 @@ class CreatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create your event'),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+            'Create your event',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 30)),
       ),
+      backgroundColor: Colors.white,
       body: _getInputs(),
 
     );

@@ -14,8 +14,16 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your profile'),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+            user.username,
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 30)),
       ),
+      backgroundColor: Colors.white,
       body: _getEvents(),
     );
   }

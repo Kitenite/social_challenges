@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'data.dart';
+import 'package:intl/intl.dart';
+
 
 class EventsListPageState extends State<EventsListPage> {
   final List<Event> _events = <Event>[];
@@ -69,19 +72,20 @@ class EventsListPageState extends State<EventsListPage> {
   }
 
   Widget _buildRow(Event event){
+    return _VideoDescription(event:event);
 
-    return ListTile(
-      title: Text(
-        event.title,
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => EventPage(event:event)),
-        );
-        // Push event page
-      },
-    );
+//    return ListTile(
+//      title: Text(
+//        event.title,
+//      ),
+//      onTap: () {
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(builder: (context) => EventPage(event:event)),
+//        );
+//        // Push event page
+//      },
+//    );
   }
 }
 
@@ -203,7 +207,6 @@ class EventPageState extends State<EventPage> {
                 Navigator.of(context).pop();
                 //Confirm attendance here
               },
-
             ),
             FlatButton(
             child: Text('Cancel'),
@@ -226,3 +229,70 @@ class EventPage extends StatefulWidget{
   EventPageState createState() => EventPageState();
 
 }
+
+class _VideoDescription extends StatelessWidget {
+  const _VideoDescription({
+    Key key,
+    this.event,
+  }) : super(key: key);
+
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    final dateString = DateFormat('EEEE, MMMM dd').format(event.date.toDate());
+
+    return Container(
+        margin: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 30.0),
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(),
+        ),
+        child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              event.title.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 25.0,
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
+            Text(
+              event.location + " - " + dateString,
+              style: const TextStyle(
+                fontWeight: FontWeight.w200,
+                fontSize: 15.0,
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
+            RichText(
+              text: new TextSpan(
+                // Note: Styles for TextSpans must be explicitly defined.
+                // Child text spans will inherit styles from parent
+                style: new TextStyle(
+                  color: Colors.black,
+                ),
+                children: <TextSpan>[
+                  new TextSpan(text: event.score.toString(), style: new TextStyle(fontSize: 50, fontWeight: FontWeight.w300)),
+                  new TextSpan(text: ' points', style: new TextStyle(fontSize: 20)),
+                ],
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+            Text(
+              event.numAttending.toString() + ' attending',
+              style: const TextStyle(fontSize: 15.0),
+            ),
+          ],
+        ),
+    )
+    );
+  }
+}
+
+

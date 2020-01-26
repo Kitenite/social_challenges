@@ -18,19 +18,14 @@ class EventsListPageState extends State<EventsListPage> {
       built = true;
     }
 
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Events near you'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _pushEventPage),
-        ], // ... to here.
       ),
       body: _getEvents(),
     );
   }
 
-  void _pushEventPage(){}
 
   Widget _getEvents() {
     return ListView.builder(

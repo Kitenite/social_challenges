@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'events.dart';
+import 'create.dart';
 
 void main() => runApp(MainAppPage());
 
@@ -9,10 +10,7 @@ class MainAppPageState  extends State<MainAppPage> {
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     EventsListPage(),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    CreatePage(),
     Text(
       'Index 2: School',
       style: optionStyle,

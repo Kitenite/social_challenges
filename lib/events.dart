@@ -72,20 +72,7 @@ class EventsListPageState extends State<EventsListPage> {
   }
 
   Widget _buildRow(Event event){
-    return _VideoDescription(event:event);
-
-//    return ListTile(
-//      title: Text(
-//        event.title,
-//      ),
-//      onTap: () {
-//        Navigator.push(
-//          context,
-//          MaterialPageRoute(builder: (context) => EventPage(event:event)),
-//        );
-//        // Push event page
-//      },
-//    );
+    return VideoDescription(event:event);
   }
 }
 
@@ -230,8 +217,8 @@ class EventPage extends StatefulWidget{
 
 }
 
-class _VideoDescription extends StatelessWidget {
-  const _VideoDescription({
+class VideoDescription extends StatelessWidget {
+  const VideoDescription({
     Key key,
     this.event,
   }) : super(key: key);

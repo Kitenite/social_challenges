@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data.dart';
+import 'events.dart';
+
 
 class ProfilePage extends StatelessWidget {
 
@@ -16,7 +18,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
-        title: Text(
+        title:  Text(
             user.username,
             style: TextStyle(
                 color: Colors.black,
@@ -29,9 +31,10 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _getEvents() {
-    return ListView.builder(
+    return
+      ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: 2,
+        itemCount: 5,
         itemBuilder: /*1*/ (context, i) {
           switch (i){
             case 0: {
@@ -39,6 +42,18 @@ class ProfilePage extends StatelessWidget {
             }
             break;
             case 1: {
+              return _buildRow(user.score.toString());
+            }
+            break;
+            case 2: {
+              if (user.pastChallenges != null) {
+                return _listChallenges(user.pastChallenges);
+              } else{
+                return _listChallenges([]);
+              }
+            }
+            break;
+            case 3: {
               return _buildRow(user.score.toString());
             }
             break;
@@ -57,5 +72,20 @@ class ProfilePage extends StatelessWidget {
     return ListTile(
       title: Text(item)
     );
+  }
+  Widget _listChallenges(List<Event> items){
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: items.length,
+        itemBuilder: /*1*/ (context, i) {
+          if (items.length <= 0) {
+            return Text("No Events");
+          }
+          print(items[i].title);
+          return buildChallenge(items[i]);
+        });
+  }
+  Widget buildChallenge(Event event){
+    return VideoDescription(event:event);
   }
 }

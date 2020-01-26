@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventsListPageState extends State<EventsListPage> {
-  final fakeEvent = new Event("Event number 1");
-  final fakeEvent2 = new Event("Event number 2");
-  final fakeEvent3 = new Event("Event number 3");
-
   final List<Event> _events = <Event>[];
 
   var built = false;
+  var _count = 0;
 
   @override
   Widget build(BuildContext context) {
     if (!built){
-      _events.add(fakeEvent);
-      _events.add(fakeEvent2);
-      _events.add(fakeEvent3);
+      _findEvents();
       built = true;
     }
 
@@ -26,8 +22,31 @@ class EventsListPageState extends State<EventsListPage> {
     );
   }
 
+  _findEvents() {
+    print("find events");
+    Firestore.instance.collection("challenge")
+      //.where("date", isGreaterThanOrEqualTo: new DateTime.now())
+      .where("full", isEqualTo: false)
+      .snapshots()
+      .listen((data) =>
+        data.documents.forEach((doc) =>
+          _addEvent(doc)));
+  }
+
+  _addEvent(DocumentSnapshot ds) {
+    print(ds.documentID);
+    if (ds["title"] == null) {return;}
+    _events.add(new Event(ds["title"], ds["owner"],
+      ds["location"].toString(), ds["score"],
+      ds["max_attending"], ds["attending"],
+      ds["date"], ds.documentID));
+    // _getEvents();
+    setState((){ _count = _events.length;});
+  }
 
   Widget _getEvents() {
+    print("get Events");
+    print(_events.length);
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _events.length,
@@ -35,6 +54,7 @@ class EventsListPageState extends State<EventsListPage> {
           if (_events.length <= 0) {
             return Text("No Events");
           }
+          print(_events[i].title);
           return _buildRow(_events[i]);
         });
   }
@@ -67,15 +87,27 @@ class Event {
   String title;
   String owner = "owner";
   String location = "Location";
+  String documentID;
   int score = 100;
   int maxAttendance = 5;
   int numAttending = 3;
-  DateTime date = DateTime.now();
+  Timestamp date;
 
 
-  Event(String title){
+  Event(String title, String owner, String location,
+    int score, int maxAttendance, int numAttending,
+    Timestamp date, String documentID) {
+    print(title);
     this.title = title;
+    this.owner = owner;
+    this.location = location;
+    this.score = score;
+    this.maxAttendance = maxAttendance;
+    this.numAttending = numAttending;
+    this.date = date;
+    this.documentID = documentID;
   }
+
 
   // Score, Owner, Max attendance, Location, Date, Number attending
 }
@@ -185,4 +217,3 @@ class EventPage extends StatefulWidget{
   EventPageState createState() => EventPageState();
 
 }
-

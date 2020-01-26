@@ -90,10 +90,7 @@ class User {
 
 // Profile: Score, username, list of upcoming challenges, past challenges and challenges they own
 
-class EventPage extends StatelessWidget {
-  final Event event;
-  EventPage({Key key, @required this.event}) : super(key: key);
-
+class EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +99,7 @@ class EventPage extends StatelessWidget {
         title: Text("Page View"),
       ),
       body: Center(
-        child: displayEvent(event),
+        child: displayEvent(widget.event),
       ),
     );
   }
@@ -110,7 +107,7 @@ class EventPage extends StatelessWidget {
   Widget displayEvent(Event event){
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: 7,
+        itemCount: 8,
         itemBuilder: /*1*/ (context, i) {
           if(i==0){
             return _buildRow(event.title);
@@ -130,8 +127,18 @@ class EventPage extends StatelessWidget {
           else if (i==5){
             return _buildRow(event.numAttending);
           }
-          else {
+          else if (i==6){
             return _buildRow(event.maxAttendance);
+          }
+          else {
+            return RaisedButton(
+              onPressed: () {
+                _neverSatisfied();
+              },
+              child: Text(
+                "Attend Event",
+              ),
+            );
           }
         });
   }
@@ -141,5 +148,42 @@ class EventPage extends StatelessWidget {
       title: Text(item.toString())
     );
   }
+
+  Future<void> _neverSatisfied() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rewind and remember'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You will never be satisfied.'),
+                Text('You\’re like me. I’m never satisfied.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Regret'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+}
+
+class EventPage extends StatefulWidget{
+  final Event event;
+  EventPage({Key key, @required this.event}) : super(key: key);
+
+  @override
+  EventPageState createState() => EventPageState();
 
 }

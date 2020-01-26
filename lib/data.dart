@@ -28,13 +28,15 @@ class Data {
 class User {
   String username;
   int score;
+  String documentID;
   List upcomingChallenges;
   List pastChallenges;
   List ownedChallenges;
 
-  User(String username, int score) {
+  User(String username, int score, String docID) {
     print("Update user");
     this.username = username;
     this.score = score;
+    this.documentID = docID;
   }
 }

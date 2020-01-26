@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'data.dart';
 
 class EventsListPageState extends State<EventsListPage> {
   final List<Event> _events = <Event>[];
@@ -77,7 +78,7 @@ class EventsListPageState extends State<EventsListPage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => EventPage(event:event)),
+          MaterialPageRoute(builder: (context) => EventPage(event:event, user:widget.user)),
         );
         // Push event page
       },
@@ -86,10 +87,15 @@ class EventsListPageState extends State<EventsListPage> {
 }
 
 class EventsListPage extends StatefulWidget {
-  EventsListPage();
+  User user;
+
+  EventsListPage(User user) {
+    this.user = user;
+  }
 
   @override
   EventsListPageState createState() => EventsListPageState();
+
 }
 
 class Event {
@@ -122,8 +128,8 @@ class Event {
       .setData({'title': title, 'owner': owner,
         'max_attending': maxAttendance,
         'attending': numAttending, 'date': date,
-        'score': score, 'location': location},
-        'full': false);
+        'score': score, 'location': location,
+        'full': false});
   }
 
 
@@ -175,7 +181,7 @@ class EventPageState extends State<EventPage> {
           else {
             return RaisedButton(
               onPressed: () {
-                _neverSatisfied();
+                _neverSatisfied(event);
               },
               child: Text(
                 "Attend Event",
@@ -191,7 +197,7 @@ class EventPageState extends State<EventPage> {
     );
   }
 
-  Future<void> _neverSatisfied() async {
+  Future<void> _neverSatisfied(Event event) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -211,6 +217,8 @@ class EventPageState extends State<EventPage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 //Confirm attendance here
+                Firestore.instance.collection("users")
+                  .document(widget.user.documentID).updateData({"upcoming": FieldValue.arrayUnion([event.documentID])});
               },
 
             ),
@@ -229,7 +237,8 @@ class EventPageState extends State<EventPage> {
 
 class EventPage extends StatefulWidget{
   final Event event;
-  EventPage({Key key, @required this.event}) : super(key: key);
+  final User user;
+  EventPage({Key key, @required this.event, @required this.user}) : super(key: key);
 
   @override
   EventPageState createState() => EventPageState();

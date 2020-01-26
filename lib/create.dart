@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'events.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'data.dart';
 
 class CreatePage extends StatelessWidget {
-  CreatePage();
+  User user;
+
+  CreatePage(User user) {
+    this.user = user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +121,9 @@ class CreatePage extends StatelessWidget {
                     var _day = _date.replaceAll(RegExp('/'), '');
                     var _clock = _time + ":00";
                     var _bits = _location.split(",");
-                    var myEvent = new Event(_title, "owner",
+                    var myEvent = new Event(_title, user.username,
                       new GeoPoint(double.parse(_bits[0]), double.parse(_bits[1])),
-                      10, int.parse(_maxAttend), 1,
+                      user.score, int.parse(_maxAttend), 1,
                       Timestamp.fromDate(DateTime.parse(_day + " " + _clock)),
                       "fakeid");
                     myEvent.create();

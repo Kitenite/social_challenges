@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'events.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(EventsPage());
 
-class MyApp extends StatelessWidget {
+class EventsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
           body:Center(
             child: EventsList(),
           ),
-
       ),
     );
   }

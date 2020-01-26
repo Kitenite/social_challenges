@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
 class EventsListState extends State<EventsList> {
+  final fakeEvent = new Event("Event number 1");
+  final fakeEvent2 = new Event("Event number 2");
+  final fakeEvent3 = new Event("Event number 3");
 
   final List<Event> _events = <Event>[];
 
   @override
   Widget build(BuildContext context) {
+    _events.add(fakeEvent);
+    _events.add(fakeEvent2);
+    _events.add(fakeEvent3);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Events near you'),
@@ -20,8 +27,6 @@ class EventsListState extends State<EventsList> {
   void _pushEventPage(){}
 
   Widget _getEvents() {
-    final fakeEvent = new Event("Event number 1");
-    _events.add(fakeEvent);
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _events.length,
@@ -44,6 +49,10 @@ class EventsListState extends State<EventsList> {
         event.title,
       ),
       onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EventPage(event:event)),
+        );
         // Push event page
       },
     );
@@ -57,6 +66,13 @@ class EventsList extends StatefulWidget {
 
 class Event {
   String title;
+  String owner = "owner";
+  String location = "Location";
+  int score = 100;
+  int maxAttendance = 5;
+  int numAttending = 3;
+  DateTime date = DateTime.now();
+
 
   Event(String title){
     this.title = title;
@@ -65,4 +81,65 @@ class Event {
   // Score, Owner, Max attendance, Location, Date, Number attending
 }
 
+class User {
+  String username;
+  List upcomingChallenges;
+  List pastChallenges;
+  List ownedChallenges;
+}
+
 // Profile: Score, username, list of upcoming challenges, past challenges and challenges they own
+
+class EventPage extends StatelessWidget {
+  final Event event;
+  EventPage({Key key, @required this.event}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Page View"),
+      ),
+      body: Center(
+        child: displayEvent(event),
+      ),
+    );
+  }
+
+  Widget displayEvent(Event event){
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: 7,
+        itemBuilder: /*1*/ (context, i) {
+          if(i==0){
+            return _buildRow(event.title);
+          }
+          else if (i==1){
+            return _buildRow(event.owner);
+          }
+          else if (i==2){
+            return _buildRow(event.location);
+          }
+          else if (i==3){
+            return _buildRow(event.date);
+          }
+          else if (i==4){
+            return _buildRow(event.score);
+          }
+          else if (i==5){
+            return _buildRow(event.numAttending);
+          }
+          else {
+            return _buildRow(event.maxAttendance);
+          }
+        });
+  }
+
+  Widget _buildRow(item){
+    return ListTile(
+      title: Text(item.toString())
+    );
+  }
+
+}

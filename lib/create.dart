@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'events.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreatePage extends StatelessWidget {
   CreatePage();
@@ -17,6 +18,12 @@ class CreatePage extends StatelessWidget {
 
   Widget _getInputs(){
     final _formKey = GlobalKey<FormState>();
+    var _title;
+    var _date;
+    var _time;
+    var _location;
+    var _maxAttend;
+
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -33,7 +40,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _title = value;
               },
             ),
             TextFormField(
@@ -44,18 +53,22 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _date = value;
               },
             ),
             TextFormField(
               decoration: const InputDecoration(
-                hintText: 'Time (00:00AM)',
+                hintText: 'Time (00:00)',
               ),
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _time = value;
               },
             ),
             TextFormField(
@@ -66,7 +79,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _location = value;
               },
             ),
             TextFormField(
@@ -77,7 +92,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _maxAttend = value;
               },
             ),
             Padding(
@@ -87,7 +104,16 @@ class CreatePage extends StatelessWidget {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.
                   if (_formKey.currentState.validate()) {
-                    // Process data.
+                    _formKey.currentState.save();
+                    var _day = _date.replaceAll(RegExp('/'), '');
+                    var _clock = _time + ":00";
+                    var _bits = _location.split(",");
+                    var myEvent = new Event(_title, "owner",
+                      new GeoPoint(double.parse(_bits[0]), double.parse(_bits[1])),
+                      10, int.parse(_maxAttend), 1,
+                      Timestamp.fromDate(DateTime.parse(_day + " " + _clock)),
+                      "fakeid");
+                    myEvent.create();
                   }
                 },
                 child: Text('Submit'),

@@ -10,7 +10,7 @@ class EventsListPageState extends State<EventsListPage> {
   @override
   Widget build(BuildContext context) {
     if (!built){
-      _findEvents();
+      findEvents();
       built = true;
     }
 
@@ -22,7 +22,7 @@ class EventsListPageState extends State<EventsListPage> {
     );
   }
 
-  _findEvents() {
+  findEvents() {
     print("find events");
     Firestore.instance.collection("challenge")
       //.where("date", isGreaterThanOrEqualTo: new DateTime.now())
@@ -37,7 +37,7 @@ class EventsListPageState extends State<EventsListPage> {
     print(ds.documentID);
     if (ds["title"] == null) {return;}
     _events.add(new Event(ds["title"], ds["owner"],
-      ds["location"].toString(), ds["score"],
+      ds["location"], ds["score"],
       ds["max_attending"], ds["attending"],
       ds["date"], ds.documentID));
     // _getEvents();
@@ -86,7 +86,7 @@ class EventsListPage extends StatefulWidget {
 class Event {
   String title;
   String owner = "owner";
-  String location = "Location";
+  GeoPoint location;
   String documentID;
   int score = 100;
   int maxAttendance = 5;
@@ -94,7 +94,7 @@ class Event {
   Timestamp date;
 
 
-  Event(String title, String owner, String location,
+  Event(String title, String owner, GeoPoint location,
     int score, int maxAttendance, int numAttending,
     Timestamp date, String documentID) {
     print(title);
@@ -106,6 +106,15 @@ class Event {
     this.numAttending = numAttending;
     this.date = date;
     this.documentID = documentID;
+  }
+
+  create() {
+    Firestore.instance.collection("challenge").document()
+      .setData({'title': title, 'owner': owner,
+        'max_attending': maxAttendance,
+        'attending': numAttending, 'date': date,
+        'score': score, 'location': location},
+        'full': false);
   }
 
 
@@ -140,7 +149,7 @@ class EventPageState extends State<EventPage> {
             return _buildRow(event.owner);
           }
           else if (i==2){
-            return _buildRow(event.location);
+            return _buildRow(event.location.latitude.toString() + ", " + event.location.longitude.toString());
           }
           else if (i==3){
             return _buildRow(event.date);

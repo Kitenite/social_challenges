@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'events.dart';
 import 'create.dart';
+import 'login_page.dart';
+import 'data_show.dart';
 
 void main() => runApp(MainAppPage());
 
@@ -14,12 +16,8 @@ class MainAppPageState  extends State<MainAppPage> {
   static List<Widget> _widgetOptions = <Widget>[
     EventsListPage(),
     CreatePage(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    DataShow(),
   ];
-
 
   @override
   Widget build(BuildContext context) {

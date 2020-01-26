@@ -192,3 +192,4 @@ class EventPage extends StatefulWidget{
   EventPageState createState() => EventPageState();
 
 }
+

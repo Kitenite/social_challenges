@@ -16,8 +16,17 @@ class EventsListPageState extends State<EventsListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Events near you'),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+            'Events near you',
+            style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 30)),
       ),
+      backgroundColor: Colors.white,
+
       body: _getEvents(),
     );
   }

@@ -72,7 +72,15 @@ class EventsListPageState extends State<EventsListPage> {
   }
 
   Widget _buildRow(Event event){
-    return VideoDescription(event:event);
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventPage(event:event, user:widget.user)),
+          );
+          // Push event page
+        },
+      child: VideoDescription(event:event));
   }
 }
 

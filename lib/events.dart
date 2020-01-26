@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'data.dart';
+import 'dart:math';
 
 class EventsListPageState extends State<EventsListPage> {
   final List<Event> _events = <Event>[];
@@ -108,7 +109,6 @@ class Event {
   int numAttending = 3;
   Timestamp date;
 
-
   Event(String title, String owner, GeoPoint location,
     int score, int maxAttendance, int numAttending,
     Timestamp date, String documentID) {
@@ -133,6 +133,22 @@ class Event {
         'ppl': [owner]});
   }
 
+  attend(User user, bool infact) {
+    if (infact) {
+      Firestore.instance.collection("users").document(user.documentID)
+        .updateData({"score": FieldValue.increment((score ~/ numAttending) + numAttending)});
+    } else {
+      Firestore.instance.collection("users").document(user.documentID)
+        .updateData({"score": FieldValue.increment(-(sqrt(score)).floor())});
+    }
+  }
+
+  peopleList() async {
+    Firestore.instance.collection("challenge").document(documentID)
+      .get().then((DocumentSnapshot ds) {
+        return ds["ppl"];
+      });
+  }
 
   // Score, Owner, Max attendance, Location, Date, Number attending
 }
@@ -223,7 +239,7 @@ class EventPageState extends State<EventPage> {
                 Firestore.instance.collection("challenge")
                   .document(event.documentID).updateData({
                   "attending": FieldValue.increment(1), "score": FieldValue.increment(widget.user.score),
-                  "ppl": FieldValue.arrayUnion([widget.user.username])
+                  "ppl": FieldValue.arrayUnion([widget.user.documentID])
                 });
                 Firestore.instance.collection("challenge")
                   .document(event.documentID).get().then((DocumentSnapshot ds) {

@@ -27,7 +27,8 @@ class Data {
       .listen((data) =>
         data.documents.forEach((doc) =>
           //self = new User(doc["username"], doc["score"])
-          print('${doc.data}')
+          // print('${doc}')
+          Firestore.instance.collection("users").document(doc.documentID).updateData({"score": 2})
         ));
   }
 }

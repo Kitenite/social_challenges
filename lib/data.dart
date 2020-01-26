@@ -26,8 +26,8 @@ class Data {
       .snapshots()
       .listen((data) =>
         data.documents.forEach((doc) =>
-          //self = new User(doc["username"], doc["score"])
-          print('${doc.data}')
+          self = new User(doc["username"], doc["score"])
+          // print('${doc.data}')
         ));
   }
 }

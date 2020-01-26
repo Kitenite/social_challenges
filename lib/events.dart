@@ -129,7 +129,8 @@ class Event {
         'max_attending': maxAttendance,
         'attending': numAttending, 'date': date,
         'score': score, 'location': location,
-        'full': false});
+        'full': numAttending >= maxAttendance,
+        'ppl': [owner]});
   }
 
 
@@ -221,7 +222,8 @@ class EventPageState extends State<EventPage> {
                   .document(widget.user.documentID).updateData({"upcoming": FieldValue.arrayUnion([event.documentID])});
                 Firestore.instance.collection("challenge")
                   .document(event.documentID).updateData({
-                  "attending": FieldValue.increment(1), "score": FieldValue.increment(widget.user.score)
+                  "attending": FieldValue.increment(1), "score": FieldValue.increment(widget.user.score),
+                  "ppl": FieldValue.arrayUnion([widget.user.username])
                 });
                 Firestore.instance.collection("challenge")
                   .document(event.documentID).get().then((DocumentSnapshot ds) {

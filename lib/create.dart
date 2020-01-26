@@ -5,7 +5,6 @@ class CreatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text('Create your event'),
@@ -23,7 +22,7 @@ class CreatePage extends StatelessWidget {
         child: Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             TextFormField(
               decoration: const InputDecoration(
@@ -81,7 +80,7 @@ class CreatePage extends StatelessWidget {
               },
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0.0),
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: RaisedButton(
                 onPressed: () {
                   // Validate will return true if the form is valid, or false if

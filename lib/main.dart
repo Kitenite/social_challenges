@@ -6,6 +6,9 @@ import 'create.dart';
 void main() => runApp(MainAppPage());
 
 class MainAppPageState  extends State<MainAppPage> {
+
+  User mainUser = new User();
+
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
@@ -29,23 +32,22 @@ class MainAppPageState  extends State<MainAppPage> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
+              icon: Icon(Icons.local_activity),
+              title: Text('Events'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              title: Text('Business'),
+              icon: Icon(Icons.add_circle),
+              title: Text('Create'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              title: Text('School'),
+              icon: Icon(Icons.account_circle),
+              title: Text('Profile'),
             ),
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.amber[800],
           onTap: _onItemTapped,
         ),
-
       ),
     );
   }

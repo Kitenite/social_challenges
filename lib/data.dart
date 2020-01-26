@@ -3,8 +3,6 @@ import 'dart:core';
 import 'dart:async';
 
 class Data {
-
-
   User self;
 
   void getAll() {
@@ -23,18 +21,16 @@ class Data {
   getUserInfo(String email) {
     return Firestore.instance.collection("users")
       .where("email", isEqualTo: email)
-      .snapshots()
-      .listen((data) =>
-        data.documents.forEach((doc) =>
-          //self = new User(doc["username"], doc["score"])
-          print('${doc.data}')
-        ));
+      .snapshots();
   }
 }
 
 class User {
   String username;
   int score;
+  List upcomingChallenges;
+  List pastChallenges;
+  List ownedChallenges;
 
   User(String username, int score) {
     print("Update user");

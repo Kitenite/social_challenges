@@ -80,13 +80,6 @@ class Event {
   // Score, Owner, Max attendance, Location, Date, Number attending
 }
 
-class User {
-  String username;
-  List upcomingChallenges;
-  List pastChallenges;
-  List ownedChallenges;
-}
-
 // Profile: Score, username, list of upcoming challenges, past challenges and challenges they own
 
 class EventPageState extends State<EventPage> {

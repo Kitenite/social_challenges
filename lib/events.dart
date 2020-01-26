@@ -20,14 +20,20 @@ class EventsListState extends State<EventsList> {
   void _pushEventPage(){}
 
   Widget _getEvents() {
+    final fakeEvent = new Event("Event number 1");
+    _events.add(fakeEvent);
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
+        itemCount: _events.length,
         itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider();
-          /*2*/
-          final index = i ~/ 2; /*3*/
-
-          return _buildRow(_events[index]);
+          if (i.isOdd) {
+            return Divider();
+          }else{
+            if (_events.length <= 0) {
+              return Text("No Events");
+            }
+            return _buildRow(_events[i]);
+          }
         });
   }
 
@@ -51,6 +57,11 @@ class EventsList extends StatefulWidget {
 
 class Event {
   String title;
+
+  Event(String title){
+    this.title = title;
+  }
+
   // Score, Owner, Max attendance, Location, Date, Number attending
 }
 

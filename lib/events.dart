@@ -13,7 +13,7 @@ class EventsListPageState extends State<EventsListPage> {
   @override
   Widget build(BuildContext context) {
     if (!built){
-      _findEvents();
+      findEvents();
       built = true;
     }
 
@@ -34,7 +34,7 @@ class EventsListPageState extends State<EventsListPage> {
     );
   }
 
-  _findEvents() {
+  findEvents() {
     print("find events");
     Firestore.instance.collection("challenge")
       //.where("date", isGreaterThanOrEqualTo: new DateTime.now())
@@ -49,7 +49,7 @@ class EventsListPageState extends State<EventsListPage> {
     print(ds.documentID);
     if (ds["title"] == null) {return;}
     _events.add(new Event(ds["title"], ds["owner"],
-      ds["location"].toString(), ds["score"],
+      ds["location"], ds["score"],
       ds["max_attending"], ds["attending"],
       ds["date"], ds.documentID));
     // _getEvents();
@@ -77,16 +77,21 @@ class EventsListPageState extends State<EventsListPage> {
 }
 
 class EventsListPage extends StatefulWidget {
-  EventsListPage();
+  User user;
+
+  EventsListPage(User user) {
+    this.user = user;
+  }
 
   @override
   EventsListPageState createState() => EventsListPageState();
+
 }
 
 class Event {
   String title;
   String owner = "owner";
-  String location = "Location";
+  GeoPoint location;
   String documentID;
   int score = 100;
   int maxAttendance = 5;
@@ -94,7 +99,7 @@ class Event {
   Timestamp date;
 
 
-  Event(String title, String owner, String location,
+  Event(String title, String owner, GeoPoint location,
     int score, int maxAttendance, int numAttending,
     Timestamp date, String documentID) {
     print(title);
@@ -106,6 +111,16 @@ class Event {
     this.numAttending = numAttending;
     this.date = date;
     this.documentID = documentID;
+  }
+
+  create() {
+    Firestore.instance.collection("challenge").document()
+      .setData({'title': title, 'owner': owner,
+        'max_attending': maxAttendance,
+        'attending': numAttending, 'date': date,
+        'score': score, 'location': location,
+        'full': numAttending >= maxAttendance,
+        'ppl': [owner]});
   }
 
 
@@ -140,7 +155,7 @@ class EventPageState extends State<EventPage> {
             return _buildRow(event.owner);
           }
           else if (i==2){
-            return _buildRow(event.location);
+            return _buildRow(event.location.latitude.toString() + ", " + event.location.longitude.toString());
           }
           else if (i==3){
             return _buildRow(event.date);
@@ -157,7 +172,7 @@ class EventPageState extends State<EventPage> {
           else {
             return RaisedButton(
               onPressed: () {
-                _neverSatisfied();
+                _neverSatisfied(event);
               },
               child: Text(
                 "Attend Event",
@@ -173,7 +188,7 @@ class EventPageState extends State<EventPage> {
     );
   }
 
-  Future<void> _neverSatisfied() async {
+  Future<void> _neverSatisfied(Event event) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -193,6 +208,21 @@ class EventPageState extends State<EventPage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 //Confirm attendance here
+                Firestore.instance.collection("users")
+                  .document(widget.user.documentID).updateData({"upcoming": FieldValue.arrayUnion([event.documentID])});
+                Firestore.instance.collection("challenge")
+                  .document(event.documentID).updateData({
+                  "attending": FieldValue.increment(1), "score": FieldValue.increment(widget.user.score),
+                  "ppl": FieldValue.arrayUnion([widget.user.username])
+                });
+                Firestore.instance.collection("challenge")
+                  .document(event.documentID).get().then((DocumentSnapshot ds) {
+                    if (ds["attending"] >= ds["max_attending"]) {
+                      Firestore.instance.collection("challenge")
+                        .document(event.documentID).updateData({"full": true});
+                    }
+                  });
+
               },
             ),
             FlatButton(
@@ -210,7 +240,8 @@ class EventPageState extends State<EventPage> {
 
 class EventPage extends StatefulWidget{
   final Event event;
-  EventPage({Key key, @required this.event}) : super(key: key);
+  final User user;
+  EventPage({Key key, @required this.event, @required this.user}) : super(key: key);
 
   @override
   EventPageState createState() => EventPageState();
@@ -250,7 +281,7 @@ class VideoDescription extends StatelessWidget {
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
             Text(
-              event.location + " - " + dateString,
+              event.location.toString() + " - " + dateString,
               style: const TextStyle(
                 fontWeight: FontWeight.w200,
                 fontSize: 15.0,

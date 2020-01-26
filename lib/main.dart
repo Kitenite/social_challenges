@@ -26,10 +26,10 @@ class MainAppPageState  extends State<MainAppPage> {
       data.getUserInfo("perak005@umn.edu").listen((data) =>
           data.documents.forEach((doc) =>
           setState(() {
-            user = new User(doc["username"], doc["score"]);
+            user = new User(doc["username"], doc["score"], doc.documentID);
             _widgetOptions = <Widget>[
-              EventsListPage(),
-              CreatePage(),
+              EventsListPage(user),
+              CreatePage(user),
               ProfilePage(user),
             ];
           })
@@ -80,4 +80,3 @@ class MainAppPage extends StatefulWidget{
   MainAppPageState createState() => MainAppPageState();
 
 }
-

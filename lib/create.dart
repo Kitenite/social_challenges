@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'events.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+  import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+import 'data.dart';
 
 class CreatePage extends StatelessWidget {
-  Event event;
-  CreatePage();
+  User user;
+
+  CreatePage(User user) {
+    this.user = user;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +33,12 @@ class CreatePage extends StatelessWidget {
 
   Widget _getInputs(context){
     final _formKey = GlobalKey<FormState>();
+    var _title;
+    var _date;
+    var _time;
+    var _location;
+    var _maxAttend;
+
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -46,7 +58,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _time = value;
               },
             )),
       Padding(
@@ -60,7 +74,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter some text';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _location = value;
               },
             )
       ),
@@ -76,7 +92,9 @@ class CreatePage extends StatelessWidget {
                 if (value.isEmpty) {
                   return 'Please enter an integer';
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _maxAttend = value;
               },
             )
         ),
@@ -102,7 +120,16 @@ class CreatePage extends StatelessWidget {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.
                   if (_formKey.currentState.validate()) {
-                    // Process data.
+                    _formKey.currentState.save();
+                    var _day = _date.replaceAll(RegExp('/'), '');
+                    var _clock = _time + ":00";
+                    var _bits = _location.split(",");
+                    var myEvent = new Event(_title, user.username,
+                      new GeoPoint(double.parse(_bits[0]), double.parse(_bits[1])),
+                      user.score, int.parse(_maxAttend), 1,
+                      Timestamp.fromDate(DateTime.parse(_day + " " + _clock)),
+                      "fakeid");
+                    myEvent.create();
                   }
                 },
                 child: Text('Submit'),
